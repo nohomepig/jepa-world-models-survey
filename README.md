@@ -1,86 +1,152 @@
-# From Joint-Embedding Prediction to World Models: A Survey
+<h1 align="center">From Joint-Embedding Prediction to World Models: A Survey</h1>
 
-**Project page:** [catqing521.github.io/jepa-world-models-survey](https://catqing521.github.io/jepa-world-models-survey/) · **Manuscript:** [PDF](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf) · **Method collection:** [browse and search](https://catqing521.github.io/jepa-world-models-survey/dist/#collection)
+<p align="center">
+  Ziying Song<sup>*</sup> · Qing Wang<sup>*</sup> · Peiliang Wu · Hao Yang · Yanchen Huo<br>
+  Lei Yang · Li Wang · Yadan Luo · Zheng Zhu
+</p>
 
-Ziying Song, Qing Wang, Peiliang Wu, Hao Yang, Yanchen Huo, Lei Yang, Li Wang, Yadan Luo, and Zheng Zhu.
+<p align="center">
+  <sup>*</sup> Equal contribution · Manuscript in preparation
+</p>
 
-This repository accompanies a survey of Joint-Embedding Predictive Architectures (JEPAs) and their development toward world modeling. The manuscript is in preparation. The PDF is a current manuscript copy, not evidence of journal acceptance.
+<p align="center">
+  <a href="https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf"><img src="https://img.shields.io/badge/Manuscript-PDF-b31b1b?style=flat-square" alt="Manuscript PDF"></a>
+  <a href="https://catqing521.github.io/jepa-world-models-survey/"><img src="https://img.shields.io/badge/Project-Page-0969da?style=flat-square" alt="Project page"></a>
+  <a href="https://catqing521.github.io/jepa-world-models-survey/dist/#collection"><img src="https://img.shields.io/badge/Method-Collection-1a7f37?style=flat-square" alt="Searchable method collection"></a>
+</p>
 
-JEPAs learn by predicting target representations from context instead of reconstructing complete observations. This survey asks what changes as that prediction is extended from static images to video, actions, multiple modalities, and structured scenes—and what the reported experiments actually establish about world-model capabilities.
+<p align="center">
+  <a href="https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf#page=6"><img src="figures/jepa-families.png" width="860" alt="Five JEPA families illustrated by static image regions, video frames, robot actions, image–text pairs, and objects with spatial relations"></a>
+  <br>
+  <sub>Prediction patterns in the five JEPA families (Figure 3 of the manuscript).</sub>
+</p>
 
-## Contents
+This repository accompanies a survey of **Joint-Embedding Predictive Architectures (JEPAs)** and their development toward world models. JEPAs learn to predict target representations from context without reconstructing the full observation. The survey follows this idea from masked image regions to video, action-conditioned dynamics, multimodal signals, and structured scenes.
 
-- [Survey overview](#survey-overview)
-- [Five JEPA families](#five-jepa-families)
-- [Capability evidence](#capability-evidence)
-- [Datasets and evaluation](#datasets-and-evaluation)
-- [Applications](#applications)
-- [Challenges](#challenges)
-- [Method collection](#method-collection)
-- [Citation and authors](#citation-and-authors)
+- **Five method families** group work by its primary prediction task.
+- **R/P/I/C** evaluates what experiments demonstrate about representation, prediction, intervention, and control.
+- **Benchmark guide** maps the families to datasets, tasks, metrics, and results reported by the original studies.
 
-## Survey overview
+## Table of Contents
 
-The survey uses two complementary views. Its **taxonomy** groups methods by their main prediction task. Its **R/P/I/C analysis** asks which abilities have been tested: useful representation, future prediction, action-sensitive prediction, and control. A method's family does not by itself establish its capability level. Some systems span more than one family; the manuscript places them according to their main contribution.
+- [Methods](#methods)
+  - [JEPA-F: Foundational and Static](#jepa-f-foundational-and-static)
+  - [JEPA-T: Temporal](#jepa-t-temporal)
+  - [JEPA-A: Action-Conditioned](#jepa-a-action-conditioned)
+  - [JEPA-M: Multimodal](#jepa-m-multimodal)
+  - [JEPA-SC: Structured and Scene-Centric](#jepa-sc-structured-and-scene-centric)
+- [Capability Evidence](#capability-evidence)
+- [Benchmarks and Datasets](#benchmarks-and-datasets)
+- [Applications and Open Problems](#applications-and-open-problems)
+- [Contributing](#contributing)
+- [Citation](#citation)
+- [Repository and Local Preview](#repository-and-local-preview)
 
-The manuscript covers JEPA foundations, technical evolution, representative performance results, applications, and open research problems. The [project page](https://catqing521.github.io/jepa-world-models-survey/) presents these parts in a browsable form; the [PDF](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf) contains the detailed analysis, citations, and performance tables.
+## Methods
 
-## Five JEPA families
+The tables below list the 26 representative entries from the [searchable method collection](https://catqing521.github.io/jepa-world-models-survey/dist/#collection), grouped by each method's primary family in the manuscript (some methods span multiple families). **Source** lists the publication venue or preprint.
 
-| Family | Main prediction task | Topics in the survey | Representative methods |
-| --- | --- | --- | --- |
-| **JEPA-F** · Foundational / static | Predict a missing representation using context from a static observation | Masked regions; local semantic targets; representation constraints | I-JEPA, DMT-JEPA, SparseJEPA |
-| **JEPA-T** · Temporal | Predict representations across time or future states | Masked spatiotemporal prediction; future-oriented latent prediction | V-JEPA, V-JEPA 2, MC-JEPA |
-| **JEPA-A** · Action-conditioned | Predict latent changes with actions as inputs | Action learning; latent rollouts for planning | V-JEPA 2-AC, LeWM, Fast-LeWM |
-| **JEPA-M** · Multimodal | Predict or align targets across modalities | Cross-modal prediction; multimodal fusion | VL-JEPA, M3-JEPA, AV-JEPA |
-| **JEPA-SC** · Structured / scene-centric | Predict point, object, geometry, or relation representations | Point clouds and 4D geometry; objects and relations | Point-JEPA, 3D-JEPA, Causal-JEPA |
+### JEPA-F: Foundational and Static
 
-These are organizing categories, not a ranking of methods or a claim that every method is a complete world model.
+Predict masked or missing features from the same observation, such as image regions or tabular variables.
 
-## Capability evidence
+| Year | Source | Method | Paper | Code / Project |
+| ---: | --- | --- | --- | --- |
+| 2023 | CVPR | **I-JEPA** | [Self-Supervised Learning From Images With a Joint-Embedding Predictive Architecture](https://openaccess.thecvf.com/content/CVPR2023/html/Assran_Self-Supervised_Learning_From_Images_With_a_Joint-Embedding_Predictive_Architecture_CVPR_2023_paper.html) | [Code](https://github.com/facebookresearch/ijepa) |
+| 2024 | arXiv | **DMT-JEPA** | [Discriminative Masked Targets for Joint-Embedding Predictive Architecture](https://arxiv.org/abs/2405.17995) | — |
+| 2025 | arXiv | **Discrete JEPA** | [Learning Discrete Token Representations without Reconstruction](https://arxiv.org/abs/2506.14373) | — |
+| 2025 | arXiv | **SparseJEPA** | [Sparse Representation Learning of Joint Embedding Predictive Architectures](https://arxiv.org/abs/2504.16140) | — |
+| 2025 | ICLR | **T-JEPA** | [Augmentation-Free Self-Supervised Learning for Tabular Data](https://openreview.net/forum?id=gx3LMRB15C) | [Code](https://github.com/jose-melo/t-jepa) |
 
-The manuscript evaluates representative systems using four questions:
+### JEPA-T: Temporal
 
-| Level | Question asked of the reported experiments |
+Learn from video or time series by predicting masked temporal segments or future latent states.
+
+| Year | Source | Method | Paper | Code / Project |
+| ---: | --- | --- | --- | --- |
+| 2023 | arXiv | **MC-JEPA** | [A Joint-Embedding Predictive Architecture for Self-Supervised Learning of Motion and Content Features](https://arxiv.org/abs/2307.12698) | — |
+| 2024 | TMLR | **V-JEPA** | [Revisiting Feature Prediction for Learning Visual Representations from Video](https://openreview.net/forum?id=QaCCuDfBk2) | [Code](https://github.com/facebookresearch/jepa) |
+| 2025 | arXiv | **V-JEPA 2** | [Self-Supervised Video Models Enable Understanding, Prediction and Planning](https://arxiv.org/abs/2506.09985) | [Code](https://github.com/facebookresearch/vjepa2) |
+| 2026 | arXiv | **Branch-JEPA** | [Finite-Support Predictive Distributions for JEPA World Models](https://arxiv.org/abs/2607.05238) | — |
+| 2026 | Knowledge-Based Systems | **CF-JEPA** | [Mask-free forward prediction with asymmetric encoder utilization for time-series representation learning](https://www.sciencedirect.com/science/article/pii/S0950705126020319) | [Code](https://github.com/WDSLab/CF-JEPA) |
+| 2026 | arXiv | **UWM-JEPA** | [Predictive World Models That Imagine in Belief Space](https://arxiv.org/abs/2605.25313) | — |
+
+### JEPA-A: Action-Conditioned
+
+Condition future latent-state prediction on actions for planning, or jointly learn latent prediction and action policies.
+
+| Year | Source | Method | Paper | Code / Project |
+| ---: | --- | --- | --- | --- |
+| 2025 | arXiv | **V-JEPA 2-AC** | [V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning](https://arxiv.org/abs/2506.09985) | [Code](https://github.com/facebookresearch/vjepa2) |
+| 2026 | IEEE Access | **ACT-JEPA** | [Novel joint-embedding predictive architecture for efficient policy representation learning](https://doi.org/10.1109/ACCESS.2026.3696039) | — |
+| 2026 | arXiv | **Fast-LeWM** | [Fast LeWorldModel](https://arxiv.org/abs/2606.26217) | [Project](https://fast-lewm.github.io/) |
+| 2026 | arXiv | **LeWM** | [LeWorldModel: Stable End-to-End Joint-Embedding Predictive Architecture from Pixels](https://arxiv.org/abs/2603.19312) | [Code](https://github.com/lucas-maes/le-wm) |
+| 2026 | arXiv | **Sub-JEPA** | [Subspace Gaussian Regularization for Stable End-to-End World Models](https://arxiv.org/abs/2605.09241) | [Code](https://github.com/intcomp/Sub-JEPA) |
+
+V-JEPA 2-AC is the action-conditioned extension reported in the V-JEPA 2 paper.
+
+### JEPA-M: Multimodal
+
+Predict or align representations across modalities such as vision, language, audio, and robot sensors.
+
+| Year | Source | Method | Paper | Code / Project |
+| ---: | --- | --- | --- | --- |
+| 2025 | ICML | **M3-JEPA** | [Multimodal Alignment via Multi-gate MoE based on the Joint-Embedding Predictive Architecture](https://proceedings.mlr.press/v267/lei25b.html) | [Code](https://github.com/HongyangLL/M3-JEPA) |
+| 2026 | arXiv | **AquaJEPA** | [An Action-Conditioned Multimodal JEPA Family for Underwater Robot Dynamics](https://arxiv.org/abs/2607.29393) | — |
+| 2026 | arXiv | **AV-JEPA** | [Extending LeJEPA to Audio-Visual Self-Supervised Learning](https://arxiv.org/abs/2607.15295) | [Code](https://github.com/AaltoML/LeAVJEPA) |
+| 2026 | CVPR Workshop | **Le MuMo JEPA** | [Multi-Modal Self-Supervised Representation Learning with Learnable Fusion Tokens](https://arxiv.org/abs/2603.24327) | [Code](https://github.com/ciemcornelissen/le-mumo-jepa) |
+| 2026 | ECCV | **MJEPA** | [A Simple and Scalable Joint-Embedding Predictive Architecture for Audio-Visual Learning](https://arxiv.org/abs/2606.25225) | [Code](https://github.com/facebookresearch/MJEPA) |
+| 2026 | ICLR | **VL-JEPA** | [Joint Embedding Predictive Architecture for Vision-Language](https://openreview.net/forum?id=tjimrqc2BU) | — |
+
+### JEPA-SC: Structured and Scene-Centric
+
+Predict representations of points, objects, geometry, or relationships within a scene.
+
+| Year | Source | Method | Paper | Code / Project |
+| ---: | --- | --- | --- | --- |
+| 2024 | arXiv | **3D-JEPA** | [A Joint Embedding Predictive Architecture for 3D Self-Supervised Representation Learning](https://arxiv.org/abs/2409.15803) | — |
+| 2025 | WACV | **Point-JEPA** | [A Joint Embedding Predictive Architecture for Self-Supervised Learning on Point Cloud](https://doi.org/10.1109/WACV61041.2025.00714) | — |
+| 2026 | ICML | **Causal-JEPA** | [Learning World Models through Object-Level Latent Masking](https://proceedings.mlr.press/v306/nam26c.html) | [Code](https://github.com/galilai-group/cjepa) |
+| 2026 | arXiv | **Cross4D-JEPA** | [Dense Cross-modal Correspondence Distillation for 4D Point Cloud Representation Learning](https://arxiv.org/abs/2607.00514) | — |
+
+## Capability Evidence
+
+[Table 2 of the manuscript](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf#page=7) summarizes which capabilities each study tested.
+
+| Capability | Core question |
 | --- | --- |
 | **R** · Representation | Are the learned features useful on downstream tasks? |
-| **P** · Prediction | Does the model predict future states that were not part of its input? |
+| **P** · Prediction | Does the model predict future states beyond the observed context? |
 | **I** · Intervention | Do predictions change appropriately when the action changes? |
-| **C** · Control | Does a system use prediction to help choose and revise actions? |
+| **C** · Control | Does a system use prediction to choose and revise actions under feedback? |
 
-The capability table also distinguishes **C<sub>sys</sub>**, closed-loop performance of the complete system, from **C<sub>attr</sub>**, evidence that a predictive component contributes to that performance. Its entries mean **D**: directly tested; **Q**: related evidence, but incomplete for the stated claim; **—**: sufficient evidence is not reported. The last symbol does not imply that the method lacks the ability. See Table 2 and its discussion in the [manuscript](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf) for method-level judgments.
+For control, **C<sub>sys</sub>** evaluates full closed-loop system performance, while **C<sub>attr</sub>** isolates the predictive component's contribution. In Table 2, **D** marks a direct test, **Q** marks related but incomplete evidence, and **—** marks no sufficient reported test.
 
-## Datasets and evaluation
+## Benchmarks and Datasets
 
-Tables 4–8 of the manuscript summarize results reported in the original studies. Table 3 maps each family to its benchmark tasks and metrics:
+[Table 3](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf#page=8) maps each family to its evaluation tasks and metrics, and Tables 4–8 summarize results quoted from the original papers. Numerical results are directly comparable only under matched tasks, data splits, and evaluation protocols (accounting for backbone size, training data, and adaptation).
 
-| Performance table | Tasks and benchmarks | Main metrics |
-| --- | --- | --- |
-| **Table 4 · JEPA-F** | ImageNet-1K classification; ADE20K semantic segmentation; COCO detection and instance segmentation; DAVIS-2017 video object segmentation | Linear, fine-tuned, and 1% classification accuracy; mIoU; box/mask AP; J&F, J, F |
-| **Table 5 · JEPA-T** | Something-Something V2 and Kinetics-400 action recognition; EPIC-KITCHENS-100 action anticipation | Top-1 accuracy; action mcR@5 |
-| **Table 6 · JEPA-A** | Two-Room navigation; Reacher; PushT; Cube | Task success and four-task average |
-| **Table 7 · JEPA-M** | COCO image–text retrieval; video–language retrieval and classification; AudioSet AS-20K audio–visual event classification | Retrieval R@1; classification accuracy; mAP |
-| **Table 8 · JEPA-SC** | ScanObjectNN PB-T50-RS object classification; ShapeNetPart part segmentation | Overall accuracy; instance mIoU |
+| Family | Benchmarks and tasks | Metrics | Results |
+| --- | --- | --- | --- |
+| [JEPA-F](#jepa-f-foundational-and-static) | ImageNet-1K classification, ADE20K semantic segmentation, COCO detection and instance segmentation, DAVIS-2017 video object segmentation | Linear, fine-tuned, and 1% classification accuracy, mIoU, box/mask AP, J&F, J, F | [Table 4](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf#page=11) |
+| [JEPA-T](#jepa-t-temporal) | Something-Something V2 and Kinetics-400 action recognition, EPIC-KITCHENS-100 action anticipation | Top-1 accuracy, action mcR@5 | [Table 5](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf#page=12) |
+| [JEPA-A](#jepa-a-action-conditioned) | Two-Room navigation, Reacher, PushT, Cube | Task success rate and four-task average | [Table 6](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf#page=12) |
+| [JEPA-M](#jepa-m-multimodal) | COCO image–text retrieval, video–language retrieval and classification, AudioSet AS-20K audio–visual event classification | Retrieval R@1, classification accuracy, mAP | [Table 7](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf#page=13) |
+| [JEPA-SC](#jepa-sc-structured-and-scene-centric) | ScanObjectNN PB-T50-RS object classification, ShapeNetPart part segmentation | Overall accuracy, instance mIoU | [Table 8](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf#page=13) |
 
-The numbers come from the original papers. Direct numeric comparisons require matching tasks, data splits, and evaluation protocols; model size, training data, and adaptation can also differ. The site provides a benchmark guide rather than a unified leaderboard.
+## Applications and Open Problems
 
-## Applications
+The survey covers image and video understanding, 3D and structured perception, embodied robotics, autonomous driving, vision–language and multimodal agents, and scientific or sequential data. [Table 9](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf#page=13) relates application areas to their typical capability requirements.
 
-The survey reviews image and spatial understanding, video understanding and anticipation, 3D and structured perception, embodied robotics, autonomous driving, vision–language and multimodal agents, and scientific or sequential data. These applications use predictions differently: some use pretrained features, while others test future states, action effects, or feedback control. Table 9 in the manuscript relates application areas to their typical capability requirements.
+The open problems include retaining information needed for prediction, modeling the effects of actions, handling uncertainty over longer horizons, tracking objects and their relations as scenes change, and verifying latent predictions efficiently.
 
-## Challenges
+## Contributing
 
-The final technical chapter discusses five connected questions: keeping representations useful for prediction; preserving sensitivity to action effects; predicting over long horizons with uncertainty; maintaining objects and relations as scenes change; and checking latent predictions without losing their computational advantage. These are open directions, not capabilities established for all JEPA systems.
+For additions or corrections, open an [issue](https://github.com/CatQing521/jepa-world-models-survey/issues) or submit a [pull request](https://github.com/CatQing521/jepa-world-models-survey/pulls). Include the method name, the manuscript citation key when available, and a link to the original study. For a classification change, specify the proposed family and explain how it fits the method's main prediction task.
 
-## Method collection
+## Citation
 
-The [searchable collection](https://catqing521.github.io/jepa-world-models-survey/dist/#collection) currently contains **26 representative entries** drawn from the manuscript's taxonomy and method discussion. Entries are grouped by family and carry the manuscript citation key. A missing link means the source bibliography did not provide a stable paper URL; it is not a missing paper result. The collection is curated and is not the full bibliography.
-
-To suggest a correction, open an issue with the method name, the manuscript citation key, and a link to the original study. Please identify the specific bibliographic or classification change requested.
-
-## Citation and authors
-
-The paper has not yet been assigned a public arXiv identifier or DOI. This provisional entry identifies the current manuscript; it should be updated after a public record is available:
+You can cite the current manuscript with the BibTeX entry below. Peiliang Wu is the corresponding author, and full affiliations appear in the [manuscript](https://catqing521.github.io/jepa-world-models-survey/paper/survey.pdf).
 
 ```bibtex
 @misc{song_jepa_world_models_survey,
@@ -91,12 +157,12 @@ The paper has not yet been assigned a public arXiv identifier or DOI. This provi
 }
 ```
 
-Equal contributors: Ziying Song and Qing Wang. Corresponding author: Peiliang Wu. The full affiliation list appears in the manuscript.
+## Repository and Local Preview
 
-## Repository files
+- [`dist/`](./dist/) contains the static project page and searchable collection.
+- [`dist/papers.json`](./dist/papers.json) contains the method metadata used by the site.
+- [`figures/`](./figures/) contains figures used in this README.
+- [`paper/survey.pdf`](./paper/survey.pdf) is the survey manuscript PDF.
+- [`index.html`](./index.html) redirects the GitHub Pages root to the project page.
 
-- [`dist/`](./dist/) — static project page and searchable method collection.
-- [`paper/survey.pdf`](./paper/survey.pdf) — manuscript PDF supplied by the authors.
-- [`index.html`](./index.html) — redirect to the project page for GitHub Pages.
-
-The website works with GitHub Pages from the `main` branch root. For a local preview, serve the repository directory with a static file server, such as `python -m http.server 8000`, then open `http://localhost:8000/`.
+The site can be served from the `main` branch root using GitHub Pages. To preview it locally, run `python3 -m http.server 8000` from the repository root and open [localhost:8000](http://localhost:8000/).
